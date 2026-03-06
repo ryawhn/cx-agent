@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CX Agent — Ticket Triage</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e1e4ed;
+    --text-muted: #8b8fa3;
+    --accent: #6c7bf7;
+    --accent-dim: #4a56c9;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --orange: #fb923c;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  header span {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    height: calc(100vh - 57px);
+  }
+
+  .panel-left {
+    border-right: 1px solid var(--border);
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .panel-right {
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+  }
+
+  textarea { resize: vertical; min-height: 100px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    width: 100%;
+  }
+
+  .btn-primary:hover { background: var(--accent-dim); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .sample-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .sample-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sample-item:hover { border-color: var(--accent); }
+  .sample-item.selected { border-color: var(--accent); background: var(--surface2); }
+  .sample-item .subject { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .sample-item .preview { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+  .sample-item .meta { font-size: 11px; color: var(--text-muted); margin-top: 6px; display: flex; gap: 8px; }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    text-align: center;
+    gap: 12px;
+  }
+
+  .empty-state svg { opacity: 0.3; }
+  .empty-state p { font-size: 14px; }
+
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step-name {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .step-body { padding: 14px 16px; font-size: 13px; line-height: 1.6; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .badge-p1 { background: rgba(248,113,113,0.15); color: var(--red); }
+  .badge-p2 { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .badge-p3 { background: rgba(52,211,153,0.15); color: var(--green); }
+  .badge-pass { background: rgba(52,211,153,0.15); color: var(--green); }
+  .badge-fail { background: rgba(248,113,113,0.15); color: var(--red); }
+  .badge-escalate { background: rgba(251,146,60,0.15); color: var(--orange); }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+  }
+
+  .detail-label { color: var(--text-muted); font-size: 12px; }
+  .detail-value { font-size: 13px; font-weight: 500; }
+
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .score-track {
+    flex: 1;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .draft-text {
+    background: var(--surface2);
+    padding: 14px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.7;
+    border-left: 3px solid var(--accent);
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 40px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .panel-left { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CX Agent</h1>
+  <span>LangGraph Pipeline</span>
+</header>
+
+<div class="layout">
+  <div class="panel-left">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('samples')">Sample Tickets</button>
+      <button class="tab" onclick="switchTab('custom')">Custom Ticket</button>
+    </div>
+
+    <div id="tab-samples">
+      <h2>Select a ticket</h2>
+      <div id="sample-list" class="sample-list">
+        <div class="loading"><div class="spinner"></div>Loading tickets...</div>
+      </div>
+    </div>
+
+    <div id="tab-custom" style="display:none">
+      <h2>Submit a ticket</h2>
+      <div class="form-group">
+        <label>Customer Name</label>
+        <input type="text" id="f-name" placeholder="Jane Doe">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="f-email" placeholder="jane@example.com">
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="f-subject" placeholder="Card declined at checkout">
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="f-body" placeholder="Describe your issue..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Channel</label>
+        <select id="f-channel">
+          <option value="email">Email</option>
+          <option value="chat">Chat</option>
+          <option value="phone">Phone</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="submitCustom()">Process Ticket</button>
+    </div>
+
+    <div style="margin-top: 20px">
+      <button id="btn-process" class="btn btn-primary" style="display:none" onclick="processSelected()">
+        Process Selected Ticket
+      </button>
+    </div>
+  </div>
+
+  <div class="panel-right">
+    <div id="results">
+      <div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 14l2 2 4-4"/>
+        </svg>
+        <p>Select or submit a ticket to see the pipeline results</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let samples = [];
+let selectedIdx = null;
+let currentTicket = null;
+
+async function loadSamples() {
+  const res = await fetch('/api/tickets/samples');
+  samples = await res.json();
+  renderSamples();
+}
+
+function renderSamples() {
+  const el = document.getElementById('sample-list');
+  el.innerHTML = samples.map((t, i) => `
+    <div class="sample-item" onclick="selectSample(${i})" id="sample-${i}">
+      <div class="subject">${esc(t.subject)}</div>
+      <div class="preview">${esc(t.body.substring(0, 120))}${t.body.length > 120 ? '...' : ''}</div>
+      <div class="meta">
+        <span>${esc(t.channel)}</span>
+        <span>${esc(t.customer_name)}</span>
+        ${t.id ? `<span>${esc(t.id)}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectSample(i) {
+  document.querySelectorAll('.sample-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`sample-${i}`).classList.add('selected');
+  selectedIdx = i;
+  document.getElementById('btn-process').style.display = 'block';
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-samples').style.display = tab === 'samples' ? 'block' : 'none';
+  document.getElementById('tab-custom').style.display = tab === 'custom' ? 'block' : 'none';
+  document.getElementById('btn-process').style.display = 'none';
+}
+
+async function processSelected() {
+  if (selectedIdx === null) return;
+  const t = samples[selectedIdx];
+  await processTicket({
+    customer_name: t.customer_name,
+    customer_email: t.customer_email,
+    subject: t.subject,
+    body: t.body,
+    channel: t.channel,
+    metadata: t.metadata || {},
+  });
+}
+
+async function submitCustom() {
+  await processTicket({
+    customer_name: document.getElementById('f-name').value,
+    customer_email: document.getElementById('f-email').value,
+    subject: document.getElementById('f-subject').value,
+    body: document.getElementById('f-body').value,
+    channel: document.getElementById('f-channel').value,
+    metadata: {},
+  });
+}
+
+async function processTicket(payload) {
+  currentTicket = payload;
+  const results = document.getElementById('results');
+  results.innerHTML = '<div class="loading"><div class="spinner"></div>Running pipeline...</div>';
+
+  document.querySelectorAll('.btn-primary').forEach(b => b.disabled = true);
+
+  try {
+    const res = await fetch('/api/process', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    renderResults(data);
+  } catch (e) {
+    results.innerHTML = `<div class="step-card"><div class="step-body" style="color:var(--red)">Error: ${esc(e.message)}</div></div>`;
+  } finally {
+    document.querySelectorAll('.btn-primary').forEach(b => b.disabled = false);
+  }
+}
+
+function renderResults(data) {
+  const el = document.getElementById('results');
+  let html = '<div class="pipeline">';
+
+  if (currentTicket) html += ticketCard(currentTicket);
+  html += statusCard(data);
+
+  if (data.triage) html += triageCard(data.triage);
+  if (data.route) html += routeCard(data.route);
+  if (data.final_response) html += draftCard(data.final_response);
+  if (data.guardrail_result) html += guardrailCard(data.guardrail_result);
+  if (data.qa_scores) html += qaCard(data.qa_scores);
+  if (data.trace && data.trace.length) html += traceCard(data.trace);
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function ticketCard(t) {
+  const channelColor = { email: 'var(--accent)', chat: 'var(--green)', phone: 'var(--orange)', 'support-portal': 'var(--yellow)' };
+  const color = channelColor[t.channel] || 'var(--text-muted)';
+  const meta = t.metadata && Object.keys(t.metadata).length
+    ? Object.entries(t.metadata)
+        .filter(([, v]) => v !== null && v !== undefined)
+        .map(([k, v]) => `<span style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px">${esc(k)}: <strong>${esc(String(v))}</strong></span>`)
+        .join('')
+    : '';
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot" style="background:var(--accent)"></div>Ticket</div>
+      <span class="badge" style="background:color-mix(in srgb,${color} 15%,transparent);color:${color}">${esc(t.channel)}</span>
+    </div>
+    <div class="step-body">
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.4">${esc(t.subject)}</div>
+      <div style="font-size:13px;line-height:1.7;color:var(--text-muted);white-space:pre-wrap;background:var(--surface2);padding:12px;border-radius:8px;margin-bottom:12px">${esc(t.body)}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div style="font-size:12px;color:var(--text-muted)">
+          <strong style="color:var(--text)">${esc(t.customer_name)}</strong>
+          ${t.customer_email ? `<span style="margin-left:6px">${esc(t.customer_email)}</span>` : ''}
+        </div>
+        ${meta ? `<div style="display:flex;gap:6px;flex-wrap:wrap">${meta}</div>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function statusCard(data) {
+  const cls = data.status === 'completed' ? 'badge-pass'
+    : data.status === 'escalated' ? 'badge-escalate' : 'badge-p2';
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot"></div>Pipeline Result</div>
+      <span class="badge ${cls}">${data.status}</span>
+    </div>
+    <div class="step-body">
+      <div class="detail-row"><span class="detail-label">Ticket ID</span><span class="detail-value">${esc(data.ticket_id)}</span></div>
+    </div>
+  </div>`;
+}
+
+function triageCard(t) {
+  const uc = t.urgency === 'P1' ? 'badge-p1' : t.urgency === 'P2' ? 'badge-p2' : 'badge-p3';
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot" style="background:var(--yellow)"></div>Triage</div>
+      <span class="badge ${uc}">${t.urgency}</span>
+    </div>
+    <div class="step-body">
+      <div class="detail-row"><span class="detail-label">Category</span><span class="detail-value">${esc(t.category)}</span></div>
+      <div class="detail-row"><span class="detail-label">Sentiment</span><span class="detail-value">${esc(t.sentiment)}</span></div>
+      <div class="detail-row"><span class="detail-label">Reasoning</span><span class="detail-value" style="max-width:60%;text-align:right">${esc(t.reasoning)}</span></div>
+    </div>
+  </div>`;
+}
+
+function routeCard(route) {
+  const label = route.replace(/_/g, ' ');
+  const cls = route === 'escalate' ? 'badge-escalate'
+    : route === 'auto_respond' ? 'badge-pass' : 'badge-p2';
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot" style="background:var(--orange)"></div>Router</div>
+      <span class="badge ${cls}">${label}</span>
+    </div>
+  </div>`;
+}
+
+function draftCard(text) {
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot" style="background:var(--green)"></div>Draft Response</div>
+    </div>
+    <div class="step-body"><div class="draft-text">${esc(text)}</div></div>
+  </div>`;
+}
+
+function guardrailCard(g) {
+  const cls = g.passed ? 'badge-pass' : 'badge-fail';
+  let body = '';
+  if (g.violations && g.violations.length) {
+    body = `<div style="margin-top:8px;color:var(--red);font-size:12px">${g.violations.map(v => `<div>• ${esc(v)}</div>`).join('')}</div>`;
+  }
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot" style="background:${g.passed ? 'var(--green)' : 'var(--red)'}"></div>Guardrails</div>
+      <span class="badge ${cls}">${g.passed ? 'pass' : 'fail'}</span>
+    </div>
+    ${body ? `<div class="step-body">${body}</div>` : ''}
+  </div>`;
+}
+
+function qaCard(q) {
+  const cls = q.passed ? 'badge-pass' : 'badge-fail';
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot" style="background:${q.passed ? 'var(--green)' : 'var(--red)'}"></div>QA / Eval</div>
+      <span class="badge ${cls}">${q.passed ? 'pass' : 'fail'}</span>
+    </div>
+    <div class="step-body">
+      ${scoreRow('Relevance', q.relevance)}
+      ${scoreRow('Tone', q.tone)}
+      ${scoreRow('Compliance', q.compliance)}
+      ${q.feedback ? `<div style="margin-top:10px;font-size:12px;color:var(--text-muted)">${esc(q.feedback)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function scoreRow(label, score) {
+  const pct = score * 10;
+  const color = score >= 7 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--red)';
+  return `<div class="detail-row">
+    <span class="detail-label">${label}</span>
+    <div class="score-bar" style="width:60%">
+      <div class="score-track"><div class="score-fill" style="width:${pct}%;background:${color}"></div></div>
+      <span class="detail-value" style="min-width:24px;text-align:right">${score}</span>
+    </div>
+  </div>`;
+}
+
+function traceCard(trace) {
+  const rows = trace.map(s => `
+    <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-weight:600;font-size:12px">${esc(s.agent)}</span>
+        <span style="font-size:11px;color:var(--text-muted)">${esc(s.timestamp || '')}</span>
+      </div>
+      <pre style="font-size:11px;color:var(--text-muted);white-space:pre-wrap;font-family:monospace;margin:0">${esc(JSON.stringify(s.output, null, 2))}</pre>
+    </div>
+  `).join('');
+
+  return `<div class="step-card">
+    <div class="step-header">
+      <div class="step-name"><div class="step-dot" style="background:var(--text-muted)"></div>Trace Log</div>
+      <span style="font-size:11px;color:var(--text-muted)">${trace.length} steps</span>
+    </div>
+    <div class="step-body">${rows}</div>
+  </div>`;
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
+loadSamples();
+</script>
+</body>
+</html>

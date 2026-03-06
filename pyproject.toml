@@ -1,0 +1,16 @@
+[project]
+name = "cx-agent"
+version = "0.1.0"
+description = "AI CX Ticket Triage + Auto-Draft Agent"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=1.0.9",
+    "langchain-openai>=1.1.10",
+    "langchain-google-genai>=4.2.1",
+    "fastapi>=0.133.1",
+    "uvicorn[standard]>=0.41.0",
+    "python-dotenv>=1.2.1",
+    "pydantic-settings>=2.13.1",
+    "numpy>=2.4.2",
+]

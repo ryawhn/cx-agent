@@ -1,0 +1,377 @@
+[
+  {
+    "id": "TKT-001",
+    "customer_name": "Wei Liang",
+    "customer_email": "wei.liang@nexustrade.hk",
+    "subject": "Corporate card declined on supplier payment - Singapore",
+    "body": "Our corporate Visa card was declined when trying to pay our Singapore supplier SGD 8,400. The card is active and we have sufficient USDC balance. Payment is now overdue and supplier is threatening to pause our order. Please advise urgently.",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 8400,
+      "card_type": "visa",
+      "country": "HK"
+    },
+    "created_at": "2026-01-07T09:23:14Z"
+  },
+  {
+    "id": "TKT-002",
+    "customer_name": "Priya Sharma",
+    "customer_email": "priya.sharma@bluerivertech.com",
+    "subject": "USDC deposit not reflected in balance after 3 hours",
+    "body": "We sent 50,000 USDC from our Coinbase account to our platform wallet at 9:15am HKT. It's now past noon and the balance hasn't updated. Transaction hash is attached. Our team is blocked from making card payments today.",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 50000,
+      "card_type": null,
+      "country": "SG"
+    },
+    "created_at": "2026-01-08T04:41:22Z"
+  },
+  {
+    "id": "TKT-003",
+    "customer_name": "Ahmed Al-Farsi",
+    "customer_email": "ahmed@meridiangroup.ae",
+    "subject": "KYB review still pending - 9 business days",
+    "body": "We submitted all KYB documents 9 business days ago including trade licence, director IDs, and proof of address. We have not received any update. Our team cannot issue expense cards and we have a board offsite next week. Can someone please escalate this?",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "AE"
+    },
+    "created_at": "2026-01-09T07:05:00Z"
+  },
+  {
+    "id": "TKT-004",
+    "customer_name": "James Okafor",
+    "customer_email": "james.okafor@stacklabs.io",
+    "subject": "Webhook not firing on card transaction events",
+    "body": "Our webhook endpoint is not receiving card spend events since Jan 7. The endpoint is live and returning 200. We checked the dashboard and transactions are going through fine — they're just not being pushed to our system. This is breaking our real-time expense sync to Xero.",
+    "channel": "support-portal",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "GB"
+    },
+    "created_at": "2026-01-10T10:15:33Z"
+  },
+  {
+    "id": "TKT-005",
+    "customer_name": "Clara Mendes",
+    "customer_email": "c.mendes@solarpeak.com.br",
+    "subject": "FX rate applied doesn't match quoted rate",
+    "body": "We sent a cross-border payment to a EUR vendor yesterday. The rate shown at confirmation was 1.082 USD/EUR but the settlement rate was 1.094. The difference works out to approximately $210 on our $18,500 payment. We'd like this reviewed and the difference refunded.",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 18500,
+      "card_type": null,
+      "country": "BR"
+    },
+    "created_at": "2026-01-11T14:22:41Z"
+  },
+  {
+    "id": "TKT-006",
+    "customer_name": "Tom Nguyen",
+    "customer_email": "tom.nguyen@craftroasters.com.au",
+    "subject": "Card spend limit too low for bulk inventory order",
+    "body": "We need to pay AUD 34,000 to our raw materials supplier but our card limit is set at AUD 20,000. We have USDC in the account to cover it. How do we request a temporary or permanent limit increase? This order needs to be placed today.",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 34000,
+      "card_type": "visa",
+      "country": "AU"
+    },
+    "created_at": "2026-01-12T01:58:12Z"
+  },
+  {
+    "id": "TKT-007",
+    "customer_name": "Natalia Kowalski",
+    "customer_email": "n.kowalski@vortexlogistics.pl",
+    "subject": "SWIFT payment to Japan failed twice - error CB-401",
+    "body": "We urgently need to settle a USD 62,000 invoice with a freight partner in Tokyo. The payment has failed twice with error code CB-401. Our partner's contract includes a late penalty clause that kicks in tomorrow. Please provide a path to resolution immediately.",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 62000,
+      "card_type": null,
+      "country": "PL"
+    },
+    "created_at": "2026-01-13T08:34:28Z"
+  },
+  {
+    "id": "TKT-008",
+    "customer_name": "Mei Lin Tan",
+    "customer_email": "meilin@brightworks.sg",
+    "subject": "Expense report sync to QuickBooks not working",
+    "body": "Since the app update on Jan 10, our card expense data is no longer syncing to QuickBooks Online. The integration shows as connected but nothing is pushing through. We have end-of-month close next week and need this fixed ASAP.",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "SG"
+    },
+    "created_at": "2026-01-14T03:12:45Z"
+  },
+  {
+    "id": "TKT-009",
+    "customer_name": "Felix Bauer",
+    "customer_email": "felix.bauer@werkzeug-gmbh.de",
+    "subject": "Unable to issue virtual cards to new team members",
+    "body": "We are trying to issue virtual Visa cards to 6 new employees added last week. The dashboard shows them as active users but the 'Issue Card' button is greyed out. We have a team trip coming up and they need cards before Friday.",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": "visa",
+      "country": "DE"
+    },
+    "created_at": "2026-01-15T09:41:19Z"
+  },
+  {
+    "id": "TKT-010",
+    "customer_name": "Samantha Yeo",
+    "customer_email": "sam.yeo@finbridge.com.hk",
+    "subject": "USDT withdrawal to external wallet taking over 24 hours",
+    "body": "I initiated a USDT withdrawal to our Binance wallet yesterday morning (Jan 14, ~10am HKT). It is now past 10am the next day and the funds haven't arrived. The transaction shows as 'Processing' in the dashboard. Can you confirm what's happening?",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 25000,
+      "card_type": null,
+      "country": "HK"
+    },
+    "created_at": "2026-01-15T02:08:33Z"
+  },
+  {
+    "id": "TKT-011",
+    "customer_name": "Rafael Souza",
+    "customer_email": "r.souza@primavera-exp.com",
+    "subject": "Account suspended without notice - payroll at risk",
+    "body": "Our account was suspended this morning without any prior communication. We have 8 employees expecting payroll transfers by Thursday. We have not violated any terms of service to our knowledge. Please restore access and explain the reason. This is critical.",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "BR"
+    },
+    "created_at": "2026-01-19T13:42:11Z"
+  },
+  {
+    "id": "TKT-012",
+    "customer_name": "Grace Otieno",
+    "customer_email": "grace.otieno@amara-retail.ke",
+    "subject": "Charged twice for same vendor payment",
+    "body": "Our vendor payment to a Dubai supplier was deducted twice from our account — once on Jan 15 ($4,200) and again on Jan 16 (same amount, same reference). We only authorised one payment. Please refund the duplicate charge.",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 4200,
+      "card_type": null,
+      "country": "KE"
+    },
+    "created_at": "2026-01-17T07:20:17Z"
+  },
+  {
+    "id": "TKT-013",
+    "customer_name": "Liam Castillo",
+    "customer_email": "liam@launchpad.io",
+    "subject": "Physical card not activating after delivery",
+    "body": "Received my Visa card in the mail 3 days ago. I've tried to activate it through the app multiple times and keep getting 'Activation failed, please contact support.' I've already verified my identity fully. Card is needed for a conference next week.",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": "visa",
+      "country": "CA"
+    },
+    "created_at": "2026-01-19T20:42:11Z"
+  },
+  {
+    "id": "TKT-014",
+    "customer_name": "Nora Kim",
+    "customer_email": "nora.kim@seouldigital.kr",
+    "subject": "Cross-border payment blocked - compliance message",
+    "body": "We tried to send a payment of $12,000 to a vendor in Pakistan and received a message saying 'Transaction blocked due to compliance review.' We have been paying this vendor for over a year. What is needed to unblock this corridor?",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 12000,
+      "card_type": null,
+      "country": "KR"
+    },
+    "created_at": "2026-01-20T01:31:48Z"
+  },
+  {
+    "id": "TKT-015",
+    "customer_name": "Ethan Clarke",
+    "customer_email": "ethan.clarke@dev.finpulse.io",
+    "subject": "API returning 429 rate limit errors during normal usage",
+    "body": "We are hitting rate limit errors (429) on the card issuance endpoint during normal business operations — not bulk calls. Our usage is well within what we'd expect to be reasonable. We're on the Growth API plan. Can you confirm our rate limits and whether there's an issue on your end?",
+    "channel": "support-portal",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "AU"
+    },
+    "created_at": "2026-01-21T05:19:26Z"
+  },
+  {
+    "id": "TKT-016",
+    "customer_name": "Isabelle Moreau",
+    "customer_email": "i.moreau@galerie-paris.fr",
+    "subject": "Transaction missing from dashboard but card was charged",
+    "body": "One of our team members used their corporate card on Jan 19 (€1,450 at a printing vendor). The charge appeared on the card statement but is completely missing from the dashboard and expense feed. We need this for our monthly reconciliation.",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 1450,
+      "card_type": "visa",
+      "country": "FR"
+    },
+    "created_at": "2026-01-22T09:44:55Z"
+  },
+  {
+    "id": "TKT-017",
+    "customer_name": "David Park",
+    "customer_email": "d.park@cardstack.io",
+    "subject": "How to issue cards programmatically via API?",
+    "body": "We're building a product on top of the platform API and want to issue virtual Visa cards to our users on signup. I've read through the API docs but I'm unclear on the cardholder KYC requirements and whether there's a sandbox environment we can test card issuance end-to-end. Can someone from the integration team advise?",
+    "channel": "support-portal",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "SG"
+    },
+    "created_at": "2026-01-23T04:17:03Z"
+  },
+  {
+    "id": "TKT-018",
+    "customer_name": "Amara Diallo",
+    "customer_email": "amara.diallo@heliossupply.sn",
+    "subject": "Employee card lost in transit - need replacement urgently",
+    "body": "One of our managers lost her corporate card while travelling. We've frozen it from the dashboard but she is currently in Dubai for a supplier meeting and needs a replacement card issued quickly. Can we expedite delivery or issue a virtual card in the meantime?",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": "visa",
+      "country": "SN"
+    },
+    "created_at": "2026-01-24T06:33:40Z"
+  },
+  {
+    "id": "TKT-019",
+    "customer_name": "Hannah Schmidt",
+    "customer_email": "h.schmidt@berlintech.de",
+    "subject": "Stablecoin deposit credited in wrong currency",
+    "body": "We deposited USDC but our dashboard now shows the balance in HKD instead of USD. This is causing confusion with our expense tracking and approval workflows. Is this a display issue or has a conversion been applied? We did not authorise any FX conversion.",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 30000,
+      "card_type": null,
+      "country": "DE"
+    },
+    "created_at": "2026-01-25T08:52:18Z"
+  },
+  {
+    "id": "TKT-020",
+    "customer_name": "Jordan Tay",
+    "customer_email": "jordan.tay@pivotops.com.sg",
+    "subject": "CSV export for reconciliation is missing columns",
+    "body": "When we export transaction data from the dashboard, the CSV is missing the merchant category code (MCC) and cardholder name columns. These are required for our finance team's reconciliation process. This was working last month. Has something changed in the export format?",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "SG"
+    },
+    "created_at": "2026-01-26T02:04:27Z"
+  },
+  {
+    "id": "TKT-021",
+    "customer_name": "Omar Farouk",
+    "customer_email": "o.farouk@cairocargo.eg",
+    "subject": "Webhook HMAC signature verification failing",
+    "body": "We're receiving webhook events but our HMAC verification is failing on all of them. We are computing SHA-256 with the secret from the dashboard but the signatures don't match. This started after we rotated our webhook secret on Jan 20. Are there any known issues or a guide we might be missing?",
+    "channel": "support-portal",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "EG"
+    },
+    "created_at": "2026-01-27T10:28:51Z"
+  },
+  {
+    "id": "TKT-022",
+    "customer_name": "Chloe Wu",
+    "customer_email": "chloe.wu@expanseHQ.com",
+    "subject": "Question on USDC to USD conversion timing and fees",
+    "body": "We're evaluating your platform for our US entity's expense management. Can you explain exactly when USDC gets converted to USD for card spend — is it at the time of the transaction or when we load the card? And what's the conversion fee? We need to model this for our treasury team.",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "US"
+    },
+    "created_at": "2026-01-28T15:15:44Z"
+  },
+  {
+    "id": "TKT-023",
+    "customer_name": "Takeshi Mori",
+    "customer_email": "t.mori@tokyoventures.jp",
+    "subject": "Two-factor authentication not working on new device",
+    "body": "I set up 2FA on a new phone and now I can't log in to the dashboard. The authenticator app shows a code but it says 'invalid code' every time. I need access urgently as there are pending approvals for outgoing payments. Please help.",
+    "channel": "chat",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": null,
+      "card_type": null,
+      "country": "JP"
+    },
+    "created_at": "2026-01-29T02:38:22Z"
+  },
+  {
+    "id": "TKT-024",
+    "customer_name": "Zara Hassan",
+    "customer_email": "z.hassan@novamedical.pk",
+    "subject": "Cancelled vendor payment not refunded after 5 days",
+    "body": "We cancelled a payment to a vendor on Jan 24 before it was processed (status showed 'Pending'). The $7,800 was deducted from our USDC balance but has not been returned. It's now been 5 business days. When will this be credited back?",
+    "channel": "email",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 7800,
+      "card_type": null,
+      "country": "PK"
+    },
+    "created_at": "2026-01-30T06:21:09Z"
+  },
+  {
+    "id": "TKT-025",
+    "customer_name": "Marcus Andersen",
+    "customer_email": "m.andersen@nordicfinance.no",
+    "subject": "URGENT: Unauthorised outbound payment - $38,000",
+    "body": "An outbound payment of $38,000 was initiated from our account this morning to an unrecognised beneficiary. None of our authorised approvers triggered this. We have already frozen the account from the dashboard but need immediate assistance to investigate and potentially recall the funds. This is a suspected compromise.",
+    "channel": "phone",
+    "metadata": {
+      "account_type": "business",
+      "transaction_amount": 38000,
+      "card_type": null,
+      "country": "NO"
+    },
+    "created_at": "2026-01-31T07:04:36Z"
+  }
+]

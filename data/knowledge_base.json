@@ -1,0 +1,107 @@
+[
+  {
+    "id": "KB-001",
+    "title": "Stablecoin Deposit Settlement Times",
+    "category": "stablecoin",
+    "content": "USDC and USDT deposits are credited after the required number of on-chain confirmations: USDC on Ethereum requires 12 confirmations (~3 minutes), USDC on Solana is near-instant. Under normal conditions, balances update within 15–30 minutes. Delays beyond 2 hours should be escalated. When investigating, request the transaction hash so the ops team can trace on-chain status. Do not commit to a specific resolution time until the transaction is confirmed on-chain. If funds are confirmed on-chain but not reflected in the dashboard, escalate to the finance ops team.",
+    "tags": ["USDC", "USDT", "deposit", "settlement", "blockchain", "stablecoin"]
+  },
+  {
+    "id": "KB-002",
+    "title": "Stablecoin Withdrawal to External Wallets",
+    "category": "stablecoin",
+    "content": "Withdrawals to external wallets are processed within 1–4 hours under normal conditions. Larger withdrawals (above $50,000 equivalent) may require additional compliance review, which can extend processing to 1 business day. If a withdrawal is stuck in 'Processing' for more than 4 hours, escalate to finance ops with the withdrawal reference ID. Customers should verify the destination wallet address supports the correct network (e.g., ERC-20 vs SPL for USDC) before initiating — incorrect network sends cannot be recovered. Do not guarantee recovery of funds sent to wrong networks.",
+    "tags": ["withdrawal", "USDC", "USDT", "wallet", "external", "network", "stablecoin"]
+  },
+  {
+    "id": "KB-003",
+    "title": "Corporate Card Decline Troubleshooting",
+    "category": "cards",
+    "content": "When a business customer reports a card decline, check the following in order: (1) Sufficient USDC/stablecoin balance in the linked account. (2) The card has not been frozen or suspended — verify in the dashboard. (3) The transaction amount does not exceed the card's spend limit. (4) International purchases are enabled if the merchant is in a different country. (5) The merchant category is not in a blocked MCC group for the account. Soft declines (balance or limit issues) can be resolved immediately. Hard declines (compliance or fraud flags) require escalation to the risk team. Do not promise immediate reinstatement for hard declines.",
+    "tags": ["card decline", "troubleshooting", "spend limit", "balance", "MCC", "international"]
+  },
+  {
+    "id": "KB-004",
+    "title": "Virtual and Physical Card Issuance",
+    "category": "cards",
+    "content": "Virtual cards are issued instantly via the dashboard or API after KYB is approved. Physical Visa cards are shipped within 5–7 business days to the registered business address. If the 'Issue Card' button is greyed out, likely causes include: KYB not yet approved, cardholder not fully set up as a team member, or the account has reached its card issuance limit. For lost or stolen cards, advise the customer to freeze the card immediately via the dashboard — this is instant. A replacement physical card can be requested in the dashboard; virtual card access can be restored immediately pending the physical replacement.",
+    "tags": ["virtual card", "physical card", "issuance", "replacement", "lost", "stolen", "Visa"]
+  },
+  {
+    "id": "KB-005",
+    "title": "KYB Requirements for Business Accounts",
+    "category": "kyb",
+    "content": "Know Your Business (KYB) verification is required before a business account can issue cards or initiate payments. Required documents: (1) Certificate of incorporation or business registration certificate. (2) Proof of registered business address (utility bill or official letter, dated within 90 days). (3) Government-issued ID for all directors and beneficial owners with >25% ownership. (4) Completed UBO (Ultimate Beneficial Owner) declaration. Some jurisdictions may require additional documents (e.g., audited financials, shareholder registry). Review SLAs: standard review takes 5–7 business days; complex structures may take longer. Do not commit to approval outcomes.",
+    "tags": ["KYB", "business verification", "UBO", "incorporation", "director", "onboarding"]
+  },
+  {
+    "id": "KB-006",
+    "title": "KYB Document Rejection and Resubmission",
+    "category": "kyb",
+    "content": "Common KYB rejection reasons include: expired documents, documents that don't match the registered entity name, proof of address older than 90 days, blurry or incomplete scans, and UBO declaration missing required signatories. Customers have up to 3 resubmission attempts through the dashboard before the case moves to manual compliance review, which can take an additional 3–5 business days. When informing a customer of a rejection, provide specific feedback on what needs to be corrected. For businesses with complex structures (holding companies, multiple jurisdictions), advise them to contact their account manager directly.",
+    "tags": ["KYB", "rejection", "resubmission", "documents", "compliance", "manual review"]
+  },
+  {
+    "id": "KB-007",
+    "title": "Cross-Border Payments and Supported Corridors",
+    "category": "payments",
+    "content": "The platform supports cross-border payments via SWIFT and local rails to 60+ countries. Payments are funded from the customer's stablecoin balance, which is converted at the time of payment initiation. Processing times: SWIFT payments typically take 1–3 business days; local rail payments (e.g., within SEPA) may be faster. Some corridors require additional compliance checks — customers should confirm supported corridors before committing to vendor payment timelines. Error code CB-401 indicates a compliance hold; escalate to the payments ops team with the transaction reference. Do not confirm delivery timelines to restricted corridors.",
+    "tags": ["cross-border", "SWIFT", "SEPA", "international", "corridors", "payments", "CB-401"]
+  },
+  {
+    "id": "KB-008",
+    "title": "FX Rates and Conversion Policy",
+    "category": "payments",
+    "content": "FX rates are locked at the time the customer confirms a payment. The rate shown on the confirmation screen is the rate applied to the transaction. If a customer disputes the rate applied, request the transaction reference ID and escalate to the finance ops team for rate reconciliation. Conversion from USDC to fiat occurs at payment initiation, not at settlement. FX fees range from 0.5% to 1.5% depending on currency pair and account tier. Do not quote specific rates — rates are live and change continuously. For large payments (>$50,000), customers on Enterprise plans may be able to request a rate lock — refer them to their account manager.",
+    "tags": ["FX", "exchange rate", "conversion", "USDC", "stablecoin", "dispute"]
+  },
+  {
+    "id": "KB-009",
+    "title": "Duplicate and Erroneous Charge Resolution",
+    "category": "billing",
+    "content": "For duplicate charges, ask the customer to provide both transaction IDs and timestamps. If our system identifies a confirmed duplicate, a refund is initiated within 48 hours back to the stablecoin balance. For vendor payments that appear duplicated (e.g., same beneficiary, same amount, close timestamps), escalate to finance ops who can trace whether two separate payment instructions were sent or one was processed twice. For card transactions, a chargeback process can be initiated if the merchant cannot resolve the duplicate directly. Customers should not cancel their card while a chargeback is in progress.",
+    "tags": ["duplicate charge", "refund", "chargeback", "billing", "vendor payment"]
+  },
+  {
+    "id": "KB-010",
+    "title": "Spend Limits and Limit Increase Requests",
+    "category": "cards",
+    "content": "Default card spend limits are set at account creation based on KYB tier and account history. Limits can be reviewed and adjusted by the account admin in the dashboard under Card Settings. For limit increases above the tier maximum, the customer should submit a limit increase request via the dashboard or contact their account manager. Temporary limit increases for one-off transactions (e.g., large supplier orders) can be requested with 1 business day notice. Supporting documentation (e.g., invoice or purchase order) may be required for significant increases. Do not approve limit increases directly in support — route to the account management team.",
+    "tags": ["spend limit", "limit increase", "card settings", "admin", "purchase limit"]
+  },
+  {
+    "id": "KB-011",
+    "title": "API Webhook Troubleshooting",
+    "category": "api",
+    "content": "Webhooks send event payloads signed with HMAC-SHA256 using the customer's webhook secret. To verify: compute the HMAC of the raw request body using the secret, then compare to the X-Signature header. After rotating a webhook secret, the new secret takes effect immediately — the old secret is invalidated. Common issues: (1) Webhook secret mismatch after rotation. (2) Endpoint returning non-200 status causing the platform to stop retrying. (3) Payload parsed before raw body read, breaking signature verification. The platform retries failed webhook deliveries up to 5 times with exponential backoff. Check the webhook delivery log in the dashboard for failure details.",
+    "tags": ["webhook", "HMAC", "signature", "API", "events", "retry", "developer"]
+  },
+  {
+    "id": "KB-012",
+    "title": "API Rate Limits",
+    "category": "api",
+    "content": "API rate limits vary by plan: Starter is 60 req/min, Growth is 300 req/min, Enterprise is custom. Rate limits apply per API key, not per account. A 429 response includes a Retry-After header indicating when the limit resets. If a customer on the Growth plan is hitting 429s during normal operations (not bulk calls), escalate to the integrations team as this may indicate a misconfiguration or a limit that needs reviewing. Advise customers to implement exponential backoff and to cache data where possible rather than polling at high frequency.",
+    "tags": ["API", "rate limit", "429", "throttle", "developer", "Growth plan"]
+  },
+  {
+    "id": "KB-013",
+    "title": "Account Suspension and Access Restoration",
+    "category": "security",
+    "content": "Accounts may be suspended automatically due to: unusual transaction patterns, failed compliance checks, KYB expiry, or flags from the platform's risk monitoring system. When a customer reports an unexpected suspension: (1) Do not confirm the suspension reason via public channels — direct them to a secure verification channel. (2) Collect the account email and business name and escalate to the compliance team. (3) Estimated review time is 1–2 business days; do not guarantee faster resolution. For businesses with urgent operational dependencies (e.g., payroll), flag as high-priority when escalating. Access is restored only after compliance team sign-off.",
+    "tags": ["suspension", "account locked", "compliance", "risk", "access", "escalation"]
+  },
+  {
+    "id": "KB-014",
+    "title": "Fraud Reporting and Unauthorised Transactions",
+    "category": "security",
+    "content": "If a customer reports an unauthorised outbound payment or wire transfer: (1) Advise them to freeze their account immediately via the dashboard — this prevents further transactions. (2) Collect the transaction reference, amount, beneficiary details, and approximate time of the transaction. (3) Escalate immediately to the fraud and security team — mark as P1. (4) For payments not yet settled, a recall attempt can be initiated, but success is not guaranteed, especially for international SWIFT payments. Customers should also change their password and review active sessions. Do not discuss investigation details or outcomes in public-facing channels. Internal SLA for fraud escalation: 1 business hour.",
+    "tags": ["fraud", "unauthorised", "wire transfer", "recall", "security", "P1", "escalation"]
+  },
+  {
+    "id": "KB-015",
+    "title": "Expense Management and Accounting Integrations",
+    "category": "general",
+    "content": "The platform integrates with QuickBooks Online, Xero, and NetSuite for automated expense sync. Card transactions are pushed to connected accounting software within 15 minutes of settlement. If sync stops working after an app update, advise the customer to disconnect and reconnect the integration from the dashboard (Settings > Integrations). CSV exports for manual reconciliation are available under Reports; the export includes transaction date, amount, currency, merchant name, cardholder name, and MCC. If columns are missing from the CSV export, this may be a known issue — check the internal status page before escalating. Receipt capture and custom expense categories are available on all paid plans.",
+    "tags": ["expense management", "QuickBooks", "Xero", "NetSuite", "integration", "CSV", "reconciliation", "MCC"]
+  }
+]
