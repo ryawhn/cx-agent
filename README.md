@@ -2,7 +2,7 @@
 
 A LangGraph multi-agent pipeline that automates CX ticket triage, response drafting, compliance checking, and quality evaluation for a fintech company.
 
-![Demo](demo.gif)
+![Demo](demo.webp)
 
 ## Architecture
 
