@@ -24,5 +24,15 @@ class Settings(BaseSettings):
     max_draft_attempts: int = 3
     qa_score_threshold: int = 7
 
+    # Bounded worker pool
+    max_workers: int = 6
+
+    # Poison pill / DLQ
+    max_job_retries: int = 3
+    max_body_bytes: int = 50_000
+
+    # Dedup window in seconds
+    dedup_window_seconds: int = 600
+
 
 settings = Settings()

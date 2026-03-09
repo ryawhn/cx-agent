@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 from pathlib import Path
 
@@ -8,17 +9,32 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.config import settings
 from app.models import TicketRequest, JobResponse, CXState
-from app.jobs import create_job, get_job, run_job, JobStatus
+from app.jobs import (
+    check_duplicate,
+    create_job,
+    enqueue_job,
+    get_dlq,
+    get_job,
+    register_dedup,
+    start_workers,
+    JobStatus,
+)
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 TICKETS_PATH = Path(__file__).resolve().parent.parent / "data" / "tickets.json"
 
 app = FastAPI(title="CX Agent", description="AI CX Ticket Triage + Auto-Draft Agent")
+
+
+@app.on_event("startup")
+async def startup_event() -> None:
+    start_workers()
 
 
 @app.get("/")
@@ -38,12 +54,32 @@ async def sample_tickets():
     return tickets
 
 
-@app.post("/api/process", status_code=202)
+@app.post("/api/process")
 async def process_ticket(req: TicketRequest):
-    ticket_dict = req.model_dump()
+    # Body size guard — reject oversized tickets before any queue work
+    body_text = req.body or ""
+    if len(body_text.encode()) > settings.max_body_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Ticket body exceeds the {settings.max_body_bytes}-byte limit.",
+        )
+
+    # Dedup — return existing job_id if same content was submitted recently
+    email = req.customer_email or ""
+    subject = req.subject or ""
+    content_hash = hashlib.sha256(
+        f"{email}|{subject}|{body_text}".encode()
+    ).hexdigest()
+
+    existing_job_id = check_duplicate(content_hash, settings.dedup_window_seconds)
+    if existing_job_id is not None:
+        return JSONResponse(
+            status_code=200,
+            content={"job_id": existing_job_id, "deduplicated": True},
+        )
 
     initial_state: CXState = {
-        "ticket": ticket_dict,
+        "ticket": req.model_dump(),
         "normalized_ticket": {},
         "triage": None,
         "route": "",
@@ -58,8 +94,30 @@ async def process_ticket(req: TicketRequest):
     }
 
     job = create_job()
-    asyncio.create_task(run_job(job.id, initial_state))
-    return {"job_id": job.id}
+    register_dedup(content_hash, job.id)
+    await enqueue_job(job.id, initial_state)
+
+    return JSONResponse(
+        status_code=202,
+        content={"job_id": job.id, "deduplicated": False},
+    )
+
+
+# Must be registered before /api/jobs/{job_id} so FastAPI doesn't treat
+# the literal "dlq" as a job_id path parameter.
+@app.get("/api/jobs/dlq")
+async def dead_letter_queue():
+    return [
+        {
+            "job_id": j.id,
+            "status": j.status.value,
+            "retry_count": j.retry_count,
+            "error": j.error,
+            "created_at": j.created_at.isoformat(),
+            "updated_at": j.updated_at.isoformat(),
+        }
+        for j in get_dlq()
+    ]
 
 
 @app.get("/api/jobs/{job_id}", response_model=JobResponse)
