@@ -2,6 +2,8 @@
 
 A LangGraph multi-agent pipeline that automates CX ticket triage, response drafting, compliance checking, and quality evaluation for a fintech company.
 
+![Demo](demo.gif)
+
 ## Architecture
 
 ```
@@ -35,4 +37,4 @@ Then open http://localhost:8000 in your browser.
 - **LangGraph** — multi-agent orchestration
 - **FastAPI** — API server
 - **LangChain** — LLM abstractions, RAG
-- **OpenAI / Gemini** — configurable LLM provider
+- **OpenRouter** — configurable LLM provider
