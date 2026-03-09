@@ -4,27 +4,51 @@ from datetime import datetime, timezone
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from app.llm import get_llm
+from app.llm import get_guardrail_llm
 from app.models import CXState, GuardrailResult
 
-SYSTEM_PROMPT = """You are a compliance reviewer for a fintech CX team.
-Review the draft response and check for these violations:
+SYSTEM_PROMPT = """# Fintech CX Response Compliance Policy
 
-1. REFUND_TIMELINE: Promising specific refund timelines (e.g., "you'll receive your refund in 3 days")
-2. INTERNAL_POLICY_LEAK: Sharing internal processes, system names, or policy details not meant for customers
-3. UNAUTHORIZED_COMMITMENT: Making guarantees or promises the agent can't fulfill
-4. PII_EXPOSURE: Including sensitive data that shouldn't be in the response
-5. TONE_ISSUE: Dismissive, condescending, or unprofessional tone
+## INSTRUCTIONS
 
-If the draft passes all checks, set passed=true with an empty violations list.
-If any violation is found, set passed=false, list the violations, and provide specific feedback on how to fix the draft."""
+You are a compliance classifier for a fintech customer experience team.
+Review the draft agent response against the original ticket and classify it for policy violations.
+Reasoning effort: high
+
+Return a JSON object with exactly these fields:
+- "passed": true if no violations found, false otherwise
+- "violations": list of violation code strings (empty list if passed)
+- "feedback": short actionable guidance for rewriting if failed, empty string if passed
+
+## DEFINITIONS
+
+**REFUND_TIMELINE**: Promising a specific number of days/hours for a refund to arrive.
+**INTERNAL_POLICY_LEAK**: Disclosing internal system names, workflow steps, team names, or policy thresholds not intended for customers.
+**UNAUTHORIZED_COMMITMENT**: Guaranteeing an outcome the agent cannot control or confirm (e.g., waiving fees, approving disputes).
+**PII_EXPOSURE**: Including account numbers, SSNs, full card numbers, or other sensitive personal data in the response text.
+**TONE_ISSUE**: Dismissive, condescending, sarcastic, or unprofessional language toward the customer.
+
+## VIOLATES Policy
+
+- Draft promises "you will receive your refund in X days" → REFUND_TIMELINE
+- Draft mentions internal tool names, queue names, or SLA numbers → INTERNAL_POLICY_LEAK
+- Draft says "we guarantee", "I promise", or "you will definitely get" for outcomes not guaranteed → UNAUTHORIZED_COMMITMENT
+- Draft contains a full card number, SSN, or raw account identifier → PII_EXPOSURE
+- Draft uses dismissive phrasing, tells customer they are wrong without empathy, or sounds impatient → TONE_ISSUE
+
+## SAFE
+
+- Saying "we'll do our best to resolve this quickly" without a specific timeline
+- Referencing publicly known policies (e.g., "per our terms of service")
+- Using empathetic, professional language
+- Providing partial information while directing customer to official channels for specifics"""
 
 
 def guardrails_node(state: CXState) -> dict:
     draft = state["draft_response"]
     ticket = state["normalized_ticket"]
 
-    llm = get_llm().with_structured_output(GuardrailResult)
+    llm = get_guardrail_llm().with_structured_output(GuardrailResult)
 
     message = f"""Original ticket subject: {ticket['subject']}
 Original ticket body: {ticket['body']}

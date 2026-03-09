@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     openrouter_api_key: str = ""
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
     openrouter_model: str = "openai/gpt-4o-mini"
+    openrouter_guardrail_model: str = "openai/gpt-oss-safeguard-20b"
     openrouter_embedding_model: str = "openai/text-embedding-3-small"
 
     openai_model: str = "gpt-4o-mini"

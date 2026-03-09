@@ -37,6 +37,22 @@ def get_llm() -> BaseChatModel:
     )
 
 
+def get_guardrail_llm() -> BaseChatModel:
+    """Always uses gpt-oss-safeguard-20b via OpenRouter regardless of the default provider."""
+    from langchain_openai import ChatOpenAI
+
+    return ChatOpenAI(
+        model=settings.openrouter_guardrail_model,
+        api_key=settings.openrouter_api_key,
+        base_url=settings.openrouter_base_url,
+        temperature=0,
+        default_headers={
+            "HTTP-Referer": "https://github.com/cx-agent",
+            "X-Title": "CX Agent",
+        },
+    )
+
+
 def get_embeddings() -> Embeddings:
     if settings.llm_provider == "openrouter":
         # OpenRouter proxies OpenAI's embedding API — same endpoint, same models
