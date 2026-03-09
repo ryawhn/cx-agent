@@ -17,6 +17,9 @@ Ticket → Intake → Triage → Router → Drafter → Guardrails → QA/Eval �
 - **Guardrails** — checks for compliance violations (fintech-specific)
 - **QA/Eval** — scores drafts on relevance, tone, and compliance
 
+## Production Scalibility 
+- **Multi-model design**: currently use gpt-oss-safeguard for guardrail, fallback to other model such as Gemini when default model not available
+
 ## Setup
 
 ```bash

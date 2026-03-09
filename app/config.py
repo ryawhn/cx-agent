@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     openrouter_embedding_model: str = "openai/text-embedding-3-small"
 
     openai_model: str = "gpt-4o-mini"
-    gemini_model: str = "gemini-2.0-flash"
+    gemini_model: str = "gemini-3-flash-preview"
 
     openai_embedding_model: str = "text-embedding-3-small"
     gemini_embedding_model: str = "models/text-embedding-004"
