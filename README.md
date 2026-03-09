@@ -19,6 +19,10 @@ Ticket → Intake → Triage → Router → Drafter → Guardrails → QA/Eval �
 
 ## Production Scalibility 
 - **Multi-model design**: currently use gpt-oss-safeguard for guardrail, fallback to other model such as Gemini when default model not available
+- **Async job queue**: `POST /api/process` enqueues a background job and returns a `job_id` in milliseconds; `graph.invoke()` runs in a thread pool via `asyncio.run_in_executor` so the event loop is never blocked. Clients poll `GET /api/jobs/:id` or subscribe via `WS /ws/jobs/:id` for live updates. Currently backed by an in-memory store — swap in Redis or a message broker (GCP Pub/Sub, SQS) for multi-instance deployments.
+
+## Edge Cases Consideration
+
 
 ## Setup
 

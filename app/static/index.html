@@ -465,8 +465,7 @@ async function submitCustom() {
 async function processTicket(payload) {
   currentTicket = payload;
   const results = document.getElementById('results');
-  results.innerHTML = '<div class="loading"><div class="spinner"></div>Running pipeline...</div>';
-
+  results.innerHTML = '<div class="loading"><div class="spinner"></div>Queuing job...</div>';
   document.querySelectorAll('.btn-primary').forEach(b => b.disabled = true);
 
   try {
@@ -475,8 +474,24 @@ async function processTicket(payload) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    const data = await res.json();
-    renderResults(data);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { job_id } = await res.json();
+
+    results.innerHTML = `<div class="loading"><div class="spinner"></div>Processing&hellip; <span style="color:var(--text-muted);font-size:12px;margin-left:6px">${esc(job_id)}</span></div>`;
+
+    await new Promise((resolve, reject) => {
+      const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+      const ws = new WebSocket(`${proto}://${location.host}/ws/jobs/${job_id}`);
+
+      ws.onmessage = (e) => {
+        const job = JSON.parse(e.data);
+        if (job.error) { reject(new Error(job.error)); ws.close(); return; }
+        if (job.status === 'completed') { renderResults(job.result); resolve(); ws.close(); }
+        if (job.status === 'failed') { reject(new Error(job.error || 'Job failed')); ws.close(); }
+      };
+
+      ws.onerror = () => reject(new Error('WebSocket error'));
+    });
   } catch (e) {
     results.innerHTML = `<div class="step-card"><div class="step-body" style="color:var(--red)">Error: ${esc(e.message)}</div></div>`;
   } finally {

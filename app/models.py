@@ -98,3 +98,12 @@ class ProcessResponse(BaseModel):
     guardrail_result: GuardrailResult | None = None
     qa_scores: QAScores | None = None
     trace: list[dict] = Field(default_factory=list)
+
+
+class JobResponse(BaseModel):
+    job_id: str
+    status: str
+    created_at: str
+    updated_at: str
+    result: ProcessResponse | None = None
+    error: str | None = None
